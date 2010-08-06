@@ -1,10 +1,13 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
+// include config file
+include PATH_THIRD.'low_replace/config'.EXT;
+
 $plugin_info = array(
-	'pi_name'			=> 'Low Replace',
-	'pi_version'		=> '2.0',
+	'pi_name'			=> LOW_REPLACE_NAME,
+	'pi_version'		=> LOW_REPLACE_VERSION,
 	'pi_author'			=> 'Lodewijk Schutte ~ Low',
-	'pi_author_url'		=> 'http://loweblog.com/freelance/article/pireplacephp/',
+	'pi_author_url'		=> 'http://loweblog.com/software/low-replace/',
 	'pi_description'	=> 'Finds and replaces characters in some text, like the php str_replace() function.',
 	'pi_usage'			=> Low_replace::usage()
 );
@@ -13,7 +16,7 @@ $plugin_info = array(
 * Low Replace Plugin class
 *
 * @package			low-replace-ee2_addon
-* @version			2.0
+* @version			2.0.1
 * @author			Lodewijk Schutte ~ Low <low@loweblog.com>
 * @link				http://loweblog.com/freelance/article/pireplacephp/
 * @license			http://creativecommons.org/licenses/by-sa/3.0/
@@ -50,11 +53,11 @@ class Low_replace {
 	{
 		// get global instance
 		$this->EE =& get_instance();
-           
+
 		// fetch params
-		$caseinsens	= ($this->EE->TMPL->fetch_param('casesensitive') === 'no');
-		$multiple	= ($this->EE->TMPL->fetch_param('multiple') === 'yes');
-		$regex		= ($this->EE->TMPL->fetch_param('regex') === 'yes');
+		$caseinsens	= ($this->EE->TMPL->fetch_param('casesensitive') == 'no');
+		$multiple	= ($this->EE->TMPL->fetch_param('multiple') == 'yes');
+		$regex		= ($this->EE->TMPL->fetch_param('regex') == 'yes');
 		$needle		= $this->EE->TMPL->fetch_param('find');
 		$replace	= $this->EE->TMPL->fetch_param('replace');
 		$haystack	= $this->EE->TMPL->tagdata;
@@ -68,14 +71,38 @@ class Low_replace {
 		// regular expression replace
 		if ($regex)
 		{
-			// check needle for first and last character
-			if (substr($needle,0,1)  != '/') { $needle  = '/'.$needle; }
-			if (substr($needle,-1,1) != '/') { $needle .= '/'; }
+			// If multiple, explode by pipe
+			if ($multiple)
+			{
+				$needles = explode('|', $needle);
+				$replacements = explode('|', $replace);
+			}
+			// if not, put neelde and replacement in single array
+			else
+			{
+				$needles = array($needle);
+				$replacements = array($replace);
+			}
 
-			// add case insensitive flag
-			if ($caseinsens) { $needle .= 'i'; }
+			// Replace PIPE with |
+			$needles = $this->_replace_pipe($needles);
+			$replacements = $this->_replace_pipe($replacements);
 
-			$this->return_data = preg_replace($needle, $replace, $haystack);
+			// loop through needles and replace 'em
+			foreach ($needles AS $i => $nee)
+			{
+				// prep needle first
+				$nee = $this->_prep_regex($nee, $caseinsens);
+
+				// If there isn't a paired replacement, use empty string
+				$rep = isset($replacements[$i]) ? $replacements[$i] : '';
+
+				// replace the haystack
+				$haystack = preg_replace($nee, $rep, $haystack);
+			}
+
+			// return the haystack
+			$this->return_data = $haystack;
 		}
 		// normal str_replace
 		else
@@ -85,139 +112,75 @@ class Low_replace {
 				// convert needle to array
 				$needle  = explode('|', $needle);
 
+				// Replace PIPE with |
+				$needle = $this->_replace_pipe($needle);
+
 				// convert replace to array if vertical bar is found
 				$replace = (substr_count($replace,'|') == 0) ? $replace : explode('|', $replace);
 			}
 
 			// perform str_replace
-			if ($caseinsens)
-			{
-				$this->return_data = $this->_str_ireplace($needle, $replace, $haystack);
-			}
-			else
-			{
-				$this->return_data = str_replace($needle, $replace, $haystack);
-			}
+			$function = ($caseinsens) ? 'str_ireplace' : 'str_replace';
+			$this->return_data = $function($needle, $replace, $haystack);
 		}
+
+		// Why not?
+		return $this->return_data;
 	}
-	
+
 	// --------------------------------------------------------------------
-	
+
 	/**
-	* Str_ireplace
-	*
-	* Case insensitive str_replace, either native (php5) or php4 alternative
+	* Prep string for regular expression pattern
 	*
 	* @access	private
-	* @param	string, string, string, integer
+	* @param	string
+	* @param	bool
 	* @return	string
 	*/
-	function _str_ireplace($search, $replace, $subject, $count = null)
-    {
-		if (function_exists('str_ireplace'))
+	function _prep_regex($str, $caseinsens = FALSE)
+	{
+		// check needle for first and last character
+		if (substr($str,0,1)  != '/') { $str  = '/'.$str; }
+		if (substr($str,-1,1) != '/') { $str .= '/'; }
+
+		// add case insensitive flag
+		if ($caseinsens) { $str .= 'i'; }
+
+		return $str;
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	* Replace pipe key character
+	*
+	* @access	private
+	* @param	mixed
+	* @return	mixed
+	*/
+	function _replace_pipe($str)
+	{
+		$key = 'PIPE';
+		$val = '|';
+		
+		if (is_array($str))
 		{
-			return str_ireplace($search, $replace, $subject, $count = null);
+			foreach ($str AS &$item)
+			{
+				$item = str_replace($key, $val, $item);
+			}
 		}
 		else
 		{
-			// str_ireplace for php < 5.0    
-
-			// +----------------------------------------------------------------------+
-			// | PHP Version 4                                                        |
-			// +----------------------------------------------------------------------+
-			// | Copyright (c) 1997-2004 The PHP Group                                |
-			// +----------------------------------------------------------------------+
-			// | This source file is subject to version 3.0 of the PHP license,       |
-			// | that is bundled with this package in the file LICENSE, and is        |
-			// | available at through the world-wide-web at                           |
-			// | http://www.php.net/license/3_0.txt.                                  |
-			// | If you did not receive a copy of the PHP license and are unable to   |
-			// | obtain it through the world-wide-web, please send a note to          |
-			// | license@php.net so we can mail you a copy immediately.               |
-			// +----------------------------------------------------------------------+
-			// | Authors: Aidan Lister <aidan@php.net>                                |
-			// +----------------------------------------------------------------------+
-			//
-			// $Id: str_ireplace.php,v 1.18 2005/01/26 04:55:13 aidan Exp $
-			
-		    // Sanity check
-	        if (is_string($search) && is_array($replace)) {
-	            user_error('Array to string conversion', E_USER_NOTICE);
-	            $replace = (string) $replace;
-	        }
-
-	        // If search isn't an array, make it one
-	        if (!is_array($search)) {
-	            $search = array ($search);
-	        }
-	        $search = array_values($search);
-
-	        // If replace isn't an array, make it one, and pad it to the length of search
-	        if (!is_array($replace)) {
-	            $replace_string = $replace;
-
-	            $replace = array ();
-	            for ($i = 0, $c = count($search); $i < $c; $i++) {
-	                $replace[$i] = $replace_string;
-	            }
-	        }
-	        $replace = array_values($replace);
-
-	        // Check the replace array is padded to the correct length
-	        $length_replace = count($replace);
-	        $length_search = count($search);
-	        if ($length_replace < $length_search) {
-	            for ($i = $length_replace; $i < $length_search; $i++) {
-	                $replace[$i] = '';
-	            }
-	        }
-
-	        // If subject is not an array, make it one
-	        $was_array = false;
-	        if (!is_array($subject)) {
-	            $was_array = true;
-	            $subject = array ($subject);
-	        }
-
-	        // Loop through each subject
-	        $count = 0;
-	        foreach ($subject as $subject_key => $subject_value) {
-	            // Loop through each search
-	            foreach ($search as $search_key => $search_value) {
-	                // Split the array into segments, in between each part is our search
-	                $segments = explode(strtolower($search_value), strtolower($subject_value));
-
-	                // The number of replacements done is the number of segments minus the first
-	                $count += count($segments) - 1;
-	                $pos = 0;
-
-	                // Loop through each segment
-	                foreach ($segments as $segment_key => $segment_value) {
-	                    // Replace the lowercase segments with the upper case versions
-	                    $segments[$segment_key] = substr($subject_value, $pos, strlen($segment_value));
-	                    // Increase the position relative to the initial string
-	                    $pos += strlen($segment_value) + strlen($search_value);
-	                }
-
-	                // Put our original string back together
-	                $subject_value = implode($replace[$search_key], $segments);
-	            }
-
-	            $result[$subject_key] = $subject_value;
-	        }
-
-	        // Check if subject was initially a string and return it as a string
-	        if ($was_array === true) {
-	            return $result[0];
-	        }
-
-	        // Otherwise, just return the array
-	        return $result;	
+			$str = str_replace($key, $val, $str);
 		}
+		
+		return $str;
 	}
-    
-	// --------------------------------------------------------------------
 	
+	// --------------------------------------------------------------------
+
 	/**
 	* Plugin usage
 	*
@@ -245,7 +208,6 @@ class Low_replace {
 
 			Result: text we want processed
 
-
 			# Replace A with a space:
 
 			{exp:low_replace find="o" replace="SPACE"}
@@ -253,7 +215,6 @@ class Low_replace {
 			{/exp:low_replace}
 
 			Result: text y u want pr cessed
-
 
 			# Replace a space with nothing
 
@@ -263,7 +224,6 @@ class Low_replace {
 
 			Result: textyouwantprocessed
 
-
 			# Replace A, B and C with D:
 
 			{exp:low_replace find="a|e|i|o|u" replace="X" multiple="yes"}
@@ -271,7 +231,6 @@ class Low_replace {
 			{/exp:low_replace}
 
 			Result: tXxt yXX wXnt prXcXssXd
-
 
 			# Replace A, B and C with X, Y and Z:
 
@@ -296,6 +255,18 @@ class Low_replace {
 			{/exp:low_replace}
 
 			Result: text (http://www.foo.com/) you want processed (http://www.bar.com/)
+			
+			{exp:low_replace find="PIPE|you" replace=",SPACE|some" multiple="yes"}
+			  text|you|want|processed
+			{/exp:low_replace}
+
+			Result: text, some, want, processed
+
+			{exp:low_replace find="\s+|\w+" replace="-|*" regex="yes" multiple="yes"}
+			  text you want processed
+			{/exp:low_replace}
+
+			Result: -*-*-*-*-
 
 			Note: if you want to replace something with nothing, best is to omit the replace parameter altogether.
 			If you want to find multiple strings, always use the multiple="yes" parameter, or else it will search
@@ -311,7 +282,7 @@ class Low_replace {
 
 		<?php
 		$buffer = ob_get_contents();
-	
+
 		ob_end_clean(); 
 
 		return $buffer;
