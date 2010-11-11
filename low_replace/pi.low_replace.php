@@ -63,8 +63,8 @@ class Low_replace {
 		$haystack	= $this->EE->TMPL->tagdata;
 
 		// clean up params
-		$dirty		= array('SPACE', 'QUOTE');
-		$clean		= array(' ', '"');
+		$dirty		= array('SPACE', 'QUOTE', 'NL');
+		$clean		= array(' ', '"', "\n");
 		$needle		= str_replace($dirty, $clean, $needle);
 		$replace	= str_replace($dirty, $clean, $replace);
 
