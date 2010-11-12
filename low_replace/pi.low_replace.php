@@ -16,7 +16,7 @@ $plugin_info = array(
 * Low Replace Plugin class
 *
 * @package			low-replace-ee2_addon
-* @version			2.0.1
+* @version			2.0.2
 * @author			Lodewijk Schutte ~ Low <low@loweblog.com>
 * @link				http://loweblog.com/freelance/article/pireplacephp/
 * @license			http://creativecommons.org/licenses/by-sa/3.0/
@@ -63,7 +63,7 @@ class Low_replace {
 		$haystack	= $this->EE->TMPL->tagdata;
 
 		// clean up params
-		$dirty		= array('SPACE', 'QUOTE', 'NL');
+		$dirty		= array('SPACE', 'QUOTE', 'NEWLINE');
 		$clean		= array(' ', '"', "\n");
 		$needle		= str_replace($dirty, $clean, $needle);
 		$replace	= str_replace($dirty, $clean, $replace);
