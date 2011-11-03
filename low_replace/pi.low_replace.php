@@ -58,6 +58,7 @@ class Low_replace {
 		$caseinsens	= ($this->EE->TMPL->fetch_param('casesensitive') == 'no');
 		$multiple	= ($this->EE->TMPL->fetch_param('multiple') == 'yes');
 		$regex		= ($this->EE->TMPL->fetch_param('regex') == 'yes');
+		$flags		= $this->EE->TMPL->fetch_param('flags');
 		$needle		= $this->EE->TMPL->fetch_param('find');
 		$replace	= $this->EE->TMPL->fetch_param('replace');
 		$haystack	= $this->EE->TMPL->tagdata;
@@ -92,7 +93,7 @@ class Low_replace {
 			foreach ($needles AS $i => $nee)
 			{
 				// prep needle first
-				$nee = $this->_prep_regex($nee, $caseinsens);
+				$nee = $this->_prep_regex($nee, $caseinsens, $flags);
 
 				// If there isn't a paired replacement, use empty string
 				$rep = isset($replacements[$i]) ? $replacements[$i] : '';
@@ -138,13 +139,14 @@ class Low_replace {
 	* @param	bool
 	* @return	string
 	*/
-	function _prep_regex($str, $caseinsens = FALSE)
+	function _prep_regex($str, $caseinsens = FALSE, $flags = false)
 	{
 		// check needle for first and last character
 		if (substr($str,0,1)  != '/') { $str  = '/'.$str; }
 		if (substr($str,-1,1) != '/') { $str .= '/'; }
 
 		// add case insensitive flag
+		if ($flags) { $str .= str_replace('i', '', $flags); }
 		if ($caseinsens) { $str .= 'i'; }
 
 		return $str;
