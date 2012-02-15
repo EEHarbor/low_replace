@@ -1,55 +1,54 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 // include config file
-include PATH_THIRD.'low_replace/config'.EXT;
+include PATH_THIRD.'low_replace/config.php';
 
 $plugin_info = array(
-	'pi_name'			=> LOW_REPLACE_NAME,
-	'pi_version'		=> LOW_REPLACE_VERSION,
-	'pi_author'			=> 'Lodewijk Schutte ~ Low',
-	'pi_author_url'		=> 'http://loweblog.com/software/low-replace/',
-	'pi_description'	=> 'Finds and replaces characters in some text, like the php str_replace() function.',
-	'pi_usage'			=> Low_replace::usage()
+	'pi_name'        => LOW_REPLACE_NAME,
+	'pi_version'     => LOW_REPLACE_VERSION,
+	'pi_author'      => 'Lodewijk Schutte ~ Low',
+	'pi_author_url'  => 'http://loweblog.com/software/low-replace/',
+	'pi_description' => 'Find and replace text by either simple string replacement or regular expression.',
+	'pi_usage'       => Low_replace::usage()
 );
 
 /**
 * Low Replace Plugin class
 *
-* @package			low-replace-ee2_addon
-* @version			2.0.2
-* @author			Lodewijk Schutte ~ Low <low@loweblog.com>
-* @link				http://loweblog.com/freelance/article/pireplacephp/
-* @license			http://creativecommons.org/licenses/by-sa/3.0/
+* @package        low_replace
+* @author         Lodewijk Schutte <hi@gotolow.com>
+* @link           http://gotolow.com/addons/low-replace
+* @license        http://creativecommons.org/licenses/by-sa/3.0/
 */
 class Low_replace {
 
 	/**
 	* Plugin return data
 	*
-	* @var	string
+	* @var         string
 	*/
-	var $return_data;
+	public $return_data;
 
 	// --------------------------------------------------------------------
 
 	/**
-	* PHP4 Constructor
+	* Legacy Constructor
 	*
-	* @see	__construct()
+	* @see         __construct()
 	*/
-	function Low_replace()
+	public function Low_replace()
 	{
-		$this->__construct();
+		return $this->__construct();
 	}
 
 	// --------------------------------------------------------------------
 
 	/**
-	* PHP 5 Constructor
+	* Constructor
 	*
-	* @return	string
+	* @return      string
 	*/
-	function __construct()
+	public function __construct()
 	{
 		// get global instance
 		$this->EE =& get_instance();
@@ -139,7 +138,7 @@ class Low_replace {
 	* @param	bool
 	* @return	string
 	*/
-	function _prep_regex($str, $caseinsens = FALSE, $flags = false)
+	function _prep_regex($str, $caseinsens = FALSE, $flags = FALSE)
 	{
 		// check needle for first and last character
 		if (substr($str,0,1)  != '/') { $str  = '/'.$str; }
