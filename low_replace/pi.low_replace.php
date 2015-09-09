@@ -1,17 +1,5 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-// include config file
-include(PATH_THIRD.'low_replace/config.php');
-
-$plugin_info = array(
-	'pi_name'        => LOW_REPLACE_NAME,
-	'pi_version'     => LOW_REPLACE_VERSION,
-	'pi_author'      => 'Lodewijk Schutte ~ Low',
-	'pi_author_url'  => LOW_REPLACE_DOCS,
-	'pi_description' => 'Find and replace text by either simple string replacement or regular expression.',
-	'pi_usage'       => 'See '.LOW_REPLACE_DOCS.' for more info.'
-);
-
 /**
  * Low Replace Plugin class
  *
@@ -50,11 +38,22 @@ class Low_replace {
 	// --------------------------------------------------------------------
 
 	/**
-	 * Constructor
+	 * Constructor just calls the text() method
 	 *
-	 * @return      string
+	 * @see         text()
 	 */
 	public function __construct()
+	{
+		return $this->text();
+	}
+
+	/**
+	 * Does the replace action
+	 *
+	 * @access      public
+	 * @return      string
+	 */
+	public function text()
 	{
 		// -------------------------------------------
 		// Init return data
@@ -100,7 +99,7 @@ class Low_replace {
 
 		if (in_array($regex, array('yes', 'raw')))
 		{
-			foreach ($find AS $i => $pattern)
+			foreach ($find as $i => $pattern)
 			{
 				// Prep pattern
 				if ($regex != 'raw')
@@ -153,7 +152,6 @@ class Low_replace {
 
 		return $str;
 	}
-
 
 	/**
 	 * Clean values and return
