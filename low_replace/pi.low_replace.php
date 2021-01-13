@@ -10,7 +10,11 @@
  * @link           http://gotolow.com/addons/low-replace
  * @license        http://creativecommons.org/licenses/by-sa/3.0/
  */
-class Low_replace
+
+include_once "addon.setup.php";
+use Low\Replace\FluxCapacitor\Base\Pi;
+
+class Low_replace extends Pi
 {
 
     // --------------------------------------------------------------------
@@ -47,6 +51,7 @@ class Low_replace
      */
     public function __construct()
     {
+        parent::__construct();
         return $this->text();
     }
 
@@ -132,10 +137,10 @@ class Low_replace
     /**
      * Prep string for regular expression pattern
      *
-     * @access	private
-     * @param	string
-     * @param	bool
-     * @return	string
+     * @access  private
+     * @param   string
+     * @param   bool
+     * @return  string
      */
     public function _prep_regex($str, $case = false, $flags = false)
     {
