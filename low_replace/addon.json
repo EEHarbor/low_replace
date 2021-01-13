@@ -1,14 +1,16 @@
 {
-  "name": "Low Replace",
-  "shortname": "low_replace",
-  "version": "3.0.0",
-  "foundation_version": "",
-  "description": "Find and replace text by either simple string replacement or regular expression.",
-  "license": "EEHarbor",
-  "namespace": "Low\\Replace",
-  "require": {
-    "php": ">=5.6.*",
-    "expressionengine/core": ">=3"
-  },
-  "resources": {}
+    "name": "Low Replace",
+    "shortname": "low_replace",
+    "version": "3.0.0",
+    "foundation_version": "4.6.1",
+    "description": "Find and replace text by either simple string replacement or regular expression.",
+    "license": "EEHarbor",
+    "namespace": "Low\\Replace",
+    "require": {
+        "php": ">=5.6.*",
+        "expressionengine/core": ">=3"
+    },
+    "resources": {
+        
+    }
 }
