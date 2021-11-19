@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 
+## [4.0.1] - 2021-11-19
+### Changed
+- Updated EEHarbor Foundation to fix issue with multiple add-ons ignoring MSM sites
+- Updated for PSR-12 compatibility (custom ruleset)
+- Updated for PHP 8 compatibility
+
 ## [4.0.0] - 2021-02-25
 ### Added
 - EE4, EE5, & EE6 compatibility
@@ -53,7 +59,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - First Release!
 
-[Unreleased]: https://github.com/packettide/wygwam/compare/v4.0.0...HEAD
+[Unreleased]: https://github.com/packettide/wygwam/compare/v4.0.1...HEAD
+[4.0.1]: https://github.com/packettide/wygwam/compare/v4.0.0...v4.0.1
 [4.0.0]: https://github.com/packettide/wygwam/compare/v3.0.0...v4.0.0
 [3.0.0]: https://github.com/packettide/wygwam/compare/v2.1.0...v3.0.0
 [2.1.0]: https://github.com/packettide/wygwam/compare/v2.0.3...v2.1.0
