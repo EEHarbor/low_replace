@@ -69,6 +69,7 @@
     border: 1px solid #e8e8e8;
     }
 .license_status h4 {
+    margin-bottom: 10px;
     font-weight: bold;
     }
 .license_status_badge {
@@ -100,7 +101,7 @@
     <h1>License</h1>
   </div>
 
-    <?php echo form_open($action_url, array('class'=>'settings panel-body')); ?>
+    <?php echo form_open($action_url, array('class' => 'settings panel-body')); ?>
 
 <?php if ($ee_ver > 2) { ?>
     <div class="app-notice-wrap"><?php echo ee('CP/Alert')->getAllInlines(); ?></div>
@@ -111,7 +112,17 @@
             <p><em>You can retrieve your license key from <b><a target="_blank" href="https://eeharbor.com/members">your Account page on EEHarbor.com</a></b>.</em></p>
         </div>
         <div class="setting-field col w-8 last">
-            <?php echo form_input('license_key', $license_key); ?>
+            <?php echo form_input('license_key', strpos($license_key, 'ignore-site-') !== false ? '' : $license_key); ?>
+        </div>
+    </fieldset>
+
+    <fieldset class="col-group required">
+        <div class="setting-txt col w-8">
+            <h3>Ignore This Site</h3>
+            <p><em>If you have Multi-Site Manager (MSM) enabled, you can choose which sites to use this add-on on.</em></p>
+        </div>
+        <div class="setting-field col w-8 last">
+            <?php echo form_checkbox('ignore_site', '1', $ignore_site); ?>
         </div>
     </fieldset>
 
@@ -157,6 +168,11 @@
                 <p>Your license key is currently registered on another website. For more information, please login to your account on
                 <a target="_blank" href="https://eeharbor.com/">EEHarbor.com</a>.</p>
             </div>
+            <div class="license_status license_status_vp" style="display:none;">
+                <h4>Valid through ExpressionEngine Pro</h4>
+                <p>Your license is valid through your ExpressionEngine Pro subscription.</p>
+                <p>You can manage your ExpressionEngine Pro subscription on <a target="_blank" href="https://expressionengine.com">ExpressionEngine.com</a>.</p>
+            </div>
             <div class="license_status_w" style="display:none;">
                 <div class="license_status_warning">
                     This add-on will cease to function if put on a production website!
@@ -193,6 +209,23 @@
                     <p>
                         <b>To renable this add-on:</b><br />
                         <ol>
+                            <li>Enter a valid license</li>
+                            <li>Enter your production domain for this license on your account page on EEHarbor.com</li>
+                        </ol>
+                    </p>
+
+                    <p>If you need assistance, please contact us on <a target="_blank" href="https://eeharbor.com/">EEHarbor.com</a>.</p>
+                </div>
+            </div>
+            <div class="license_status_ignored" style="display:none;">
+                <div class="license_status">
+                    <h4>Site Ignored (add-on disabled)</h4>
+                    <p>This add-on has been disabled for this site.</p>
+                    <p>The unlicensed use of this add-on on production websites is a violation of the Add-on License Agreement.</p>
+                    <p>
+                        <b>To renable this add-on:</b><br />
+                        <ol>
+                            <li>Uncheck "Ignore This Site"</li>
                             <li>Enter a valid license</li>
                             <li>Enter your production domain for this license on your account page on EEHarbor.com</li>
                         </ol>
