@@ -1,4 +1,6 @@
-<?php if (! defined('BASEPATH')) {
+<?php
+
+if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -146,7 +148,7 @@ class Low_replace extends Pi
     {
         // check needle for first and last character
         if (substr($str, 0, 1)  != '/') {
-            $str  = '/'.$str;
+            $str  = '/' . $str;
         }
         if (substr($str, -1, 1) != '/') {
             $str .= '/';
