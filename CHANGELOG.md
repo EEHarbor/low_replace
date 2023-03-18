@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+
+## [4.1.0] - 2022-03-18
+### Changed
+- Update Foundation Version
+- Start PHP 8.2 Compatibility
+
 ## [4.0.2] - 2022-09-27
 - Verified ExpressionEngine 7 Compatibility
 
@@ -61,7 +67,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - First Release!
 
-[Unreleased]: https://github.com/packettide/wygwam/compare/v4.0.2...HEAD
+[Unreleased]: https://github.com/packettide/wygwam/compare/v4.1.0...HEAD
+[4.1.0]: https://github.com/packettide/wygwam/compare/v4.0.2...v4.1.0
 [4.0.2]: https://github.com/packettide/wygwam/compare/v4.0.1...v4.0.2
 [4.0.1]: https://github.com/packettide/wygwam/compare/v4.0.0...v4.0.1
 [4.0.0]: https://github.com/packettide/wygwam/compare/v3.0.0...v4.0.0
