@@ -2,7 +2,7 @@
     "name": "Low Replace",
     "shortname": "low_replace",
     "version": "4.0.2",
-    "foundation_version": "4.9.0",
+    "foundation_version": "4.10.0",
     "description": "Find and replace text by either simple string replacement or regular expression.",
     "license": "EEHarbor",
     "namespace": "Low\\Replace",
@@ -11,6 +11,6 @@
         "expressionengine/core": ">=3"
     },
     "resources": {
-
+        
     }
 }
